@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { assets, blogCategories } from "../../assets/assets";
 import Quill from "quill";
 import { useAppContext } from "../../context/AppContext";
-import { parse } from "marked";
+// import { parse } from "marked";
 
 const AddBlog = () => {
   // Tambahkan ini
@@ -18,28 +18,28 @@ const AddBlog = () => {
   const [category, setCategory] = useState("Startup");
   const [isPublished, setIsPublished] = useState(false);
 
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
 
-  const generateContent = async () => {
-    if (!little) return toast.error("Please enter a title");
+  // const generateContent = async () => {
+  //   if (!title) return toast.error("Please enter a title");
 
-    try {
-      setLoading(true);
-      const { data } = await axios.post("/api/blog/generate", {
-        prompt: title,
-      });
+  //   try {
+  //     setLoading(true);
+  //     const { data } = await axios.post("/api/blog/generate", {
+  //       prompt: title,
+  //     });
 
-      if (data.success) {
-        quillRef.current.root.innerHTML = parse(data.content);
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      toast.error(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     if (data.success) {
+  //       quillRef.current.root.innerHTML = parse(data.content);
+  //     } else {
+  //       toast.error(data.message);
+  //     }
+  //   } catch (error) {
+  //     toast.error(error.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const onSubmitHandler = async (e) => {
     // Tambahkan function ini agar data bisa diupload ke database
@@ -133,15 +133,16 @@ const AddBlog = () => {
         <p className="mt-4">Blog Description</p>
         <div className="max-w-lg h-74 pb-16 sm:pb-10 pt-2 relative">
           <div ref={editorRef}></div>
+
           {/* Tambahkan animation loading */}
-          {loading && (
+          {/* {loading && (
             <div className="absolute right-0 top-0 bottom-0 left-0 flex justify-center items-center">
               <div className="w-8 h-8 rounded-full border-2 border-t-white animate-spin"></div>
             </div>
-          )}
+          )} */}
 
           {/* tambahkan properti disabled */}
-          <button
+          {/* <button
             disabled={loading}
             type="button"
             onClick={generateContent}
@@ -149,7 +150,7 @@ const AddBlog = () => {
             "
           >
             Generate with AI
-          </button>
+          </button> */}
         </div>
 
         <p className="mt-4">Blog Category</p>

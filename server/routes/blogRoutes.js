@@ -3,7 +3,7 @@ import {
   addBlog,
   addComment,
   deleteBlogById,
-  generateContent,
+  // generateContent,
   getAllBlogs,
   getBlogById,
   getBlogComments,
@@ -26,7 +26,7 @@ blogRouter.post("/add-comment", auth, addComment);
 blogRouter.post("/comments", auth, getBlogComments);
 
 // Generate AI
-blogRouter.post("/generate", auth, generateContent);
+// blogRouter.post("/generate", auth, generateContent);
 
 
 export default blogRouter;

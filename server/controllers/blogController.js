@@ -2,12 +2,12 @@ import fs from "fs";
 import imagekit from "../configs/imageKit.js";
 import Blog from "../models/Blog.js";
 import Comment from "../models/Comment.js";
-import main from "../configs/gemini.js";
+// import main from "../configs/gemini.js";
 
 export const addBlog = async (req, res) => {
   try {
     const { title, subTitle, description, category, isPublished } = JSON.parse(
-      req.body.blog
+      req.body.blog,
     );
 
     const imageFile = req.file;
@@ -115,11 +115,13 @@ export const addComment = async (req, res) => {
 export const getBlogComments = async (req, res) => {
   try {
     const { blogId } = req.body;
-    const comments =
-      //Memanggil dari file Comment.js
-      (await Comment.find({ blog: blogId, isApproved: true })).toSorted({
-        createdAt: -1,
-      });
+
+    //Memanggil dari file Comment.js
+    const comments = await Comment.find({
+      blog: blogId,
+      isApproved: true,
+    }).sort({ createdAt: -1 });
+
     res.json({ success: true, comments });
   } catch (err) {
     res.json({ success: false, message: err.message });
@@ -127,15 +129,15 @@ export const getBlogComments = async (req, res) => {
 };
 
 // Generate AI
-export const generateContent = async (req, res) => {
-  try {
-    // Mendapatkan prompt dari request body, kapanpun memanggil API kita harus melalui request body
-    const { prompt } = req.body;
-    const content = await main(
-      prompt + "Generate a blog content for this topic in simple text format"
-    );
-    res.json({ success: true, content });
-  } catch (error) {
-    res.json({ success: false, message: error.message });
-  }
-};
+// export const generateContent = async (req, res) => {
+//   try {
+//     // Mendapatkan prompt dari request body, kapanpun memanggil API kita harus melalui request body
+//     const { prompt } = req.body;
+//     const content = await main(
+//       prompt + "Generate a blog content for this topic in simple text format"
+//     );
+//     res.json({ success: true, content });
+//   } catch (error) {
+//     res.json({ success: false, message: error.message });
+//   }
+// };
