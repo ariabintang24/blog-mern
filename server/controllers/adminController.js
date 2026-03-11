@@ -12,10 +12,23 @@ export const adminLogin = async (req, res) => {
       return res.json({ success: false, message: "Invalid credentials" });
     }
 
-    const token = jwt.sign({ email: email }, process.env.JWT_SECRET);
-    res.json({ success: true, message: "Admin logged in", token });
+    const token = jwt.sign(
+      {
+        id: user._id,
+        role: "user",
+      },
+      process.env.JWT_SECRET,
+    );
+    res.json({
+      success: true,
+      message: "Admin logged in",
+      token,
+    });
   } catch (err) {
-    res.json({ success: false, message: err.message });
+    res.json({
+      success: false,
+      message: err.message,
+    });
   }
 };
 

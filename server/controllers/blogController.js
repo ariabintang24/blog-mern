@@ -44,7 +44,7 @@ export const addBlog = async (req, res) => {
       category,
       image,
       isPublished,
-      author: req.user.id
+      author: req.user.id,
     });
 
     res.json({ success: true, message: "Blog added successfully" });
@@ -65,7 +65,7 @@ export const getAllBlogs = async (req, res) => {
 export const getBlogById = async (req, res) => {
   try {
     const { blogId } = req.params;
-    const blog = await Blog.findById(blogId);
+    const blog = await Blog.findById(blogId).populate("author");
     if (!blog) {
       return res.json({ success: false, message: "Blog Not Found" });
     }
@@ -104,9 +104,14 @@ export const togglePublish = async (req, res) => {
 
 export const addComment = async (req, res) => {
   try {
-    const { blog, name, content } = req.body;
-    //Memanggil dari file Comment.js
-    await Comment.create({ blog, name, content });
+    const { blog, content } = req.body;
+
+    await Comment.create({
+      blog,
+      content,
+      user: req.user.id,
+    });
+
     res.json({ success: true, message: "Comment Added for Review" });
   } catch (err) {
     res.json({ success: false, message: err.message });
@@ -121,11 +126,43 @@ export const getBlogComments = async (req, res) => {
     const comments = await Comment.find({
       blog: blogId,
       isApproved: true,
-    }).sort({ createdAt: -1 });
+    })
+      .populate("user")
+      .sort({ createdAt: -1 });
 
     res.json({ success: true, comments });
   } catch (err) {
     res.json({ success: false, message: err.message });
+  }
+};
+
+export const getUserBlogs = async (req, res) => {
+  try {
+    const blogs = await Blog.find({
+      author: req.params.userId,
+    }).sort({ createdAt: -1 });
+
+    res.json({ success: true, blogs });
+  } catch (err) {
+    res.json({ success: false, message: err.message });
+  }
+};
+
+export const getBlogsByUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const blogs = await Blog.find({ author: userId }).sort({ createdAt: -1 });
+
+    res.json({
+      success: true,
+      blogs,
+    });
+  } catch (err) {
+    res.json({
+      success: false,
+      message: err.message,
+    });
   }
 };
 
