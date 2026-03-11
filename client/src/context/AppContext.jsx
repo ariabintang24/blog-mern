@@ -13,11 +13,16 @@ export const AppProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [blogs, setBlogs] = useState([]);
   const [input, setInput] = useState("");
+  const [searched, setSearched] = useState(false);
 
   const fetchBlogs = async () => {
     try {
       const { data } = await axios.get("/api/blog/all");
-      data.success ? setBlogs(data.blogs) : toast.error(data.massage);
+      if (data.success) {
+        setBlogs(Array.isArray(data.blogs) ? data.blogs : []);
+      } else {
+        toast.error(data.message);
+      }
     } catch (err) {
       toast.error(err.message);
     }
@@ -42,6 +47,8 @@ export const AppProvider = ({ children }) => {
     setBlogs,
     input,
     setInput,
+    searched,
+    setSearched,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

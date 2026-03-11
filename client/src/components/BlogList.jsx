@@ -6,7 +6,7 @@ import { useAppContext } from "../context/AppContext";
 
 const BlogList = () => {
   const [menu, setMenu] = useState("All");
-  const { blogs, input } = useAppContext();
+  const { blogs, input, setInput, searched, setSearched } = useAppContext();
 
   const filteredBlogs =
     input === ""
@@ -43,11 +43,30 @@ const BlogList = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8 mb-24 mx-8 sm:mx-16 xl:mx-40">
         {/* sebelumnya blog_data kemudian diubah menjadi filteredBlogs */}
-        {filteredBlogs
-          .filter((blog) => (menu === "All" ? true : blog.category === menu))
-          .map((blog) => (
-            <BlogCard key={blog._id} blog={blog} />
-          ))}
+        {filteredBlogs.length === 0 && searched ? (
+          <div className="col-span-full text-center py-16">
+            <h2 className="text-xl font-semibold text-gray-700 mb-2">
+              No posts found for "{input}"
+            </h2>
+
+            <p className="text-gray-500 text-sm mb-6">
+              Try searching with a different keyword.
+            </p>
+
+            {/* Jika inputan pada search dihapus, maka blog akan muncul  */}
+            <button
+              onClick={() => {
+                setInput("");
+                setSearched(false);
+              }}
+              className="bg-primary text-white px-5 py-2 rounded-md shadow transition cursor-pointer"
+            >
+              Clear Search
+            </button>
+          </div>
+        ) : (
+          filteredBlogs.map((blog) => <BlogCard key={blog._id} blog={blog} />)
+        )}
       </div>
     </div>
   );
