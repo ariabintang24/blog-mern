@@ -1,8 +1,7 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import { comments_data } from "../../assets/assets";
+import React, { useState, useEffect } from "react";
 import CommentTableItem from "../../components/admin/CommentTableItem";
 import { useAppContext } from "../../context/AppContext";
+import toast from "react-hot-toast";
 
 const Comments = () => {
   const [comments, setComments] = useState([]);
@@ -11,12 +10,14 @@ const Comments = () => {
   const { axios } = useAppContext();
 
   const fetchComments = async () => {
-    // setComments(comments_data);
-
-    // Kita ubah menjadi memanggil dari API atau data aktual
     try {
       const { data } = await axios.get("/api/admin/comments");
-      data.success ? setComments(data.comments) : toast.error(data.message);
+
+      if (data.success) {
+        setComments(data.comments);
+      } else {
+        toast.error(data.message);
+      }
     } catch (error) {
       toast.error(error.message);
     }
@@ -29,7 +30,8 @@ const Comments = () => {
   return (
     <div className="flex-1 pt-5 px-5 sm:pt-12 sm:pl-16 bg-blue-50/50">
       <div className="flex justify-between items-center max-w-3xl">
-        <h1 className="">Comments</h1>
+        <h1>Comments ({comments.length})</h1>
+
         <div className="flex gap-4">
           <button
             onClick={() => setFilter("Approved")}
@@ -37,7 +39,7 @@ const Comments = () => {
               filter === "Approved" ? "text-primary" : "text-gray-700"
             }`}
           >
-            Aprroved
+            Approved
           </button>
 
           <button
@@ -46,7 +48,7 @@ const Comments = () => {
               filter === "Not Approved" ? "text-primary" : "text-gray-700"
             }`}
           >
-            Not Aprroved
+            Not Approved
           </button>
         </div>
       </div>
@@ -55,17 +57,12 @@ const Comments = () => {
         <table className="w-full text-sm text-gray-500">
           <thead className="text-xs text-gray-700 text-left uppercase">
             <tr>
-              <th scope="col" className="px-6 py-3">
-                Blog Title and Comment
-              </th>
-              <th scope="col" className="px-6 py-3 max-sm:hidden">
-                Date
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Actions
-              </th>
+              <th className="px-6 py-3">Blog Title and Comment</th>
+              <th className="px-6 py-3 max-sm:hidden">Date</th>
+              <th className="px-6 py-3">Actions</th>
             </tr>
           </thead>
+
           <tbody>
             {comments
               .filter((comment) => {
@@ -74,9 +71,8 @@ const Comments = () => {
               })
               .map((comment, index) => (
                 <CommentTableItem
-                  comment={comment}
                   key={comment._id}
-                  index={index + 1}
+                  comment={comment}
                   fetchComments={fetchComments}
                 />
               ))}

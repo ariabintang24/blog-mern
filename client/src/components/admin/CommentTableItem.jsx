@@ -12,7 +12,7 @@ const CommentTableItem = ({ comment, fetchComments }) => {
   // Membuat fungsionalitas Approved
   const approveComment = async () => {
     try {
-      const { data } = await axios.post("/api/admin/aprrove-comment", {
+      const { data } = await axios.post("/api/admin/approve-comment", {
         id: _id,
       });
       if (data.success) {
@@ -30,7 +30,7 @@ const CommentTableItem = ({ comment, fetchComments }) => {
   const deleteComment = async () => {
     try {
       const confirm = window.confirm(
-        "Are you sure want to delete this comment?"
+        "Are you sure want to delete this comment?",
       );
       if (!confirm) return;
 
@@ -50,7 +50,7 @@ const CommentTableItem = ({ comment, fetchComments }) => {
   };
 
   return (
-    <tr className="order-y border-gray-300">
+    <tr className="border-y border-gray-300">
       <td className="px-6 py-4">
         <b className="font-medium text-gray-600">Blog</b> : {blog.title}
         <br />
@@ -68,8 +68,8 @@ const CommentTableItem = ({ comment, fetchComments }) => {
             <img
               onClick={approveComment}
               src={assets.tick_icon}
-              alt=""
-              className="transition-all w-5 hover:scale-110 cursor-pointer"
+              alt="approve"
+              className="w-5 cursor-pointer hover:scale-125 transition"
             />
           ) : (
             <p className="text-xs border border-green-600 bg-green-100 text-green-600 rounded-full px-3 py-1">

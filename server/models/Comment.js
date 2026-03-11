@@ -4,7 +4,7 @@ const commentSchema = new mangoose.Schema(
   {
     blog: {
       type: mangoose.Schema.Types.ObjectId,
-      ref: "blog",
+      ref: "Blog",
       required: true,
     },
     name: {
