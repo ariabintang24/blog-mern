@@ -1,14 +1,15 @@
-import mangoose from "mongoose";
+import mongoose from "mongoose";
 
-const commentSchema = new mangoose.Schema(
+const commentSchema = new mongoose.Schema(
   {
     blog: {
-      type: mangoose.Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Blog",
       required: true,
     },
-    name: {
-      type: String,
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
     content: {
       type: String,
@@ -21,9 +22,9 @@ const commentSchema = new mangoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-const Comment = mangoose.model("Comment", commentSchema);
+const Comment = mongoose.model("Comment", commentSchema);
 
 export default Comment;
