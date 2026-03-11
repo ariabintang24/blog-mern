@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { blog_data } from "../../assets/assets";
 import BlogTableItem from "../../components/admin/BlogTableItem";
 import { useAppContext } from "../../context/AppContext";
+import toast from "react-hot-toast";
 
 const ListBlog = () => {
   const [blogs, setBlogs] = useState([]);
@@ -12,7 +13,7 @@ const ListBlog = () => {
 
     // Ubah code sebelumnya menjadi, maka akan muncul list data blog aktual
     try {
-      const { data } = await axios.get("api/admin/blogs");
+      const { data } = await axios.get("api/blog/all");
       if (data.success) {
         setBlogs(data.blogs);
       } else {

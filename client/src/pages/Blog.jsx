@@ -25,7 +25,7 @@ const Blog = () => {
     // Code yang sebelumnya diganti dengan ini
     try {
       const { data } = await axios.get(`/api/blog/${id}`);
-      data.success ? setData(data.blog) : toast.error(error.message);
+      data.success ? setData(data.blog) : toast.error(data.message);
     } catch (err) {
       toast.error(err.message);
     }
@@ -50,6 +50,11 @@ const Blog = () => {
   const addComment = async (e) => {
     e.preventDefault();
 
+    if (!name.trim() || !content.trim()) {
+      toast.error("Please fill all fields");
+      return;
+    }
+
     // Tambahkan ini
     try {
       const { data } = await axios.post("/api/blog/add-comment", {
@@ -73,106 +78,131 @@ const Blog = () => {
   useEffect(() => {
     fetchBlogData();
     fetchComments();
-  }, []);
+  }, [id]);
 
   return data ? (
     <div className="relative">
       <img
         src={assets.gradientBackground}
         alt=""
-        className="absolute -top-50 -z-1 opacity-50"
+        className="absolute -top-40 opacity-40 -z-10"
       />
+
       <Navbar />
 
-      <div className="text-center mt-20 text-gray-600">
-        <p className="text-primary py-4 font-medium">
-          Published on {Moment(data.createdAt).format("D, MMMM YYYY")}
+      {/* Article Header */}
+      <header className="max-w-3xl mx-auto text-center px-6 mt-20">
+        <p className="text-primary text-sm font-medium">
+          Published on {Moment(data.createdAt).format("D MMMM YYYY")}
         </p>
 
-        <h1 className="text-2xl sm:text-5xl font-semibold max-w-2xl mx-auto text-gray-800">
+        <h1 className="mt-3 text-3xl sm:text-5xl font-bold text-gray-900 leading-tight">
           {data.title}
         </h1>
-        <h2 className="my-5 max-w-lg truncate mx-auto">{data.subTitle}</h2>
-        <p className="inline-block py-1 px-4 rounded-full mb-6 border text-sm border-primary/35 bg-primary/5 font-medium text-primary">
-          Lionel Messi
-        </p>
-      </div>
 
-      <div className="mx-5 max-w-5xl md:mx-auto my-10 mt-6 ">
-        <img src={data.image} alt="" className="rounded-3xl mb-5" />
+        <p className="mt-4 text-gray-500 text-lg">{data.subTitle}</p>
 
-        <div
+        <span className="inline-block mt-5 px-4 py-1 text-sm rounded-full bg-primary/10 text-primary">
+          Blog Article
+        </span>
+      </header>
+
+      {/* Article Body */}
+      <main className="max-w-3xl mx-auto px-6 mt-12 mb-24">
+        <img
+          src={data.image}
+          alt={data.title}
+          className="w-full rounded-xl shadow-md mb-10"
+        />
+
+        <article
           dangerouslySetInnerHTML={{ __html: data.description }}
-          className="rich-text max-w-3xl mx-auto"
-        ></div>
+          className="rich-text text-gray-700 leading-relaxed text-[17px]"
+        />
 
-        {/* comments */}
-        <div className="mt-14 mb-10 max-w-3xl mx-auto">
-          <p className="font-semibold mb-4">Comments ({comments.length})</p>
+        {/* Comments */}
+        <section className="mt-20">
+          <h2 className="text-xl font-semibold mb-6">
+            Comments ({comments.length})
+          </h2>
+
+          {comments.length === 0 && (
+            <p className="text-gray-700 text-sm">
+              No comments yet. Be the first to comment.
+            </p>
+          )}
 
           <div className="flex flex-col gap-4">
             {comments.map((item, index) => (
               <div
                 key={index}
-                className="relative bg-primary/2 border border-primary/5 max-w-xl p-4 rounded text-gray-600"
+                className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm"
               >
                 <div className="flex items-center gap-2 mb-2">
-                  <img src={assets.user_icon} alt="" className="w-6" />
+                  <img src={assets.user_icon} className="w-6" />
                   <p className="font-medium">{item.name}</p>
+                  <span className="text-xs text-gray-400 ml-auto">
+                    {Moment(item.createdAt).fromNow()}
+                  </span>
                 </div>
-                <p className="text-sm max-w-md ml-8">{item.content}</p>
-                <div className="absolute right-4 bottom-3 flex items-center gap-2 text-xs">
-                  {Moment(item.createdAt).fromNow()}
-                </div>
+
+                <p className="text-sm text-gray-600">{item.content}</p>
               </div>
             ))}
           </div>
-        </div>
-        {/* Add Comment Section */}
-        <div className="max-w-3xl mx-auto">
-          <p className="font-semibold mb-4">Add your comment</p>
-          <form
-            onSubmit={addComment}
-            className="flex flex-col items-start gap-4 max-w-lg"
-          >
+        </section>
+
+        {/* Add Comment */}
+        <section className="mt-16">
+          <h2 className="text-xl font-semibold mb-4">Add your comment</h2>
+
+          <form onSubmit={addComment} className="flex flex-col gap-4 max-w-lg">
             <input
-              onChange={(e) => setName(e.target.value)}
               value={name}
-              type="text"
+              onChange={(e) => setName(e.target.value)}
               placeholder="Name"
               required
-              className="border border-gray-300 rounded outline-none   w-full p-2"
+              className="border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-primary outline-none"
             />
+
             <textarea
-              onChange={(e) => setContent(e.target.value)}
               value={content}
+              onChange={(e) => setContent(e.target.value)}
               placeholder="Comment"
               required
-              className="border border-gray-300 rounded outline-none   w-full p-2 h-48"
-            ></textarea>
+              className="border border-gray-300 rounded-md p-3 h-40 focus:ring-2 focus:ring-primary outline-none"
+            />
 
             <button
               type="submit"
-              className="bg-primary text-white rounded p-2 px-8 hover:scale-102 transition-all cursor-pointer"
+              className="bg-primary text-white rounded-md py-2 px-6 w-fit hover:opacity-90 transition"
             >
               Submit
             </button>
           </form>
-        </div>
+        </section>
 
-        {/* Share Button */}
-        <div className="my-24 max-w-3xl mx-auto">
-          <p className="font-semibold my-4">
-            Share this article on Social Media
-          </p>
+        {/* Share */}
+        <section className="mt-20">
+          <p className="font-semibold mb-4">Share this article</p>
 
-          <div className="flex">
-            <img src={assets.facebook_icon} width={50} alt="" />
-            <img src={assets.twitter_icon} width={50} alt="" />
-            <img src={assets.googleplus_icon} width={50} alt="" />
+          <div className="flex gap-4">
+            <img
+              src={assets.facebook_icon}
+              className="w-10 cursor-pointer hover:scale-110 transition"
+            />
+            <img
+              src={assets.twitter_icon}
+              className="w-10 cursor-pointer hover:scale-110 transition"
+            />
+            <img
+              src={assets.googleplus_icon}
+              className="w-10 cursor-pointer hover:scale-110 transition"
+            />
           </div>
-        </div>
-      </div>
+        </section>
+      </main>
+
       <Footer />
     </div>
   ) : (
