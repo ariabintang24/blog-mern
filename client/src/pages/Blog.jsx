@@ -102,9 +102,7 @@ const Blog = () => {
 
         <p className="mt-4 text-gray-500 text-lg">{data.subTitle}</p>
 
-        <span className="inline-block mt-5 px-4 py-1 text-sm rounded-full bg-primary/10 text-primary">
-          Blog Article
-        </span>
+        <p className="text-sm text-gray-500">By {data.author?.name}</p>
       </header>
 
       {/* Article Body */}

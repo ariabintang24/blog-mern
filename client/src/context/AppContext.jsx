@@ -14,6 +14,7 @@ export const AppProvider = ({ children }) => {
   const [blogs, setBlogs] = useState([]);
   const [input, setInput] = useState("");
   const [searched, setSearched] = useState(false);
+  const [user, setUser] = useState(null);
 
   const fetchBlogs = async () => {
     try {
@@ -32,11 +33,27 @@ export const AppProvider = ({ children }) => {
     fetchBlogs();
 
     const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+
     if (token) {
       setToken(token);
-      axios.defaults.headers.common["Authorization"] = `${token}`;
+      axios.defaults.headers.common["Authorization"] = token;
+    }
+
+    if (user) {
+      setUser(JSON.parse(user));
     }
   }, []);
+
+  //logout
+  const logout = () => {
+    setToken(null);
+    setUser(null);
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    delete axios.defaults.headers.common["Authorization"];
+    navigate("/");
+  };
 
   const value = {
     axios,
@@ -49,6 +66,9 @@ export const AppProvider = ({ children }) => {
     setInput,
     searched,
     setSearched,
+    user,
+    setUser,
+    logout,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
