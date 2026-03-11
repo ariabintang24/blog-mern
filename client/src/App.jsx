@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import { useAppContext } from "./context/AppContext";
 import Home from "./pages/Home";
 import Blog from "./pages/Blog";
 import Layout from "./pages/admin/Layout";
@@ -11,8 +12,7 @@ import "quill/dist/quill.snow.css";
 import { Toaster } from "react-hot-toast";
 
 const App = () => {
-
-  const {token} = useAppContext();
+  const { token } = useAppContext();
   return (
     <div>
       <Toaster />

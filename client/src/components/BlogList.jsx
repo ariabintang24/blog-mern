@@ -8,17 +8,14 @@ const BlogList = () => {
   const [menu, setMenu] = useState("All");
   const { blogs, input } = useAppContext();
 
-  const filteredBlogs = () => {
-    if (input === "") {
-      return blogs;
-    } else {
-      return blogs.filter(
-        (blog) =>
-          blog.title.toLowerCase().includes(input.toLowerCase()) ||
-          blog.category.toLowerCase().includes(input.toLowerCase())
-      );
-    }
-  };
+  const filteredBlogs =
+    input === ""
+      ? blogs
+      : blogs.filter(
+          (blog) =>
+            blog.title.toLowerCase().includes(input.toLowerCase()) ||
+            blog.category.toLowerCase().includes(input.toLowerCase()),
+        );
 
   return (
     <div>
