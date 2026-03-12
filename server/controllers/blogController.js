@@ -1,6 +1,7 @@
 import fs from "fs";
 import imagekit from "../configs/imageKit.js";
 import Blog from "../models/Blog.js";
+import User from "../models/User.js";
 import Comment from "../models/Comment.js";
 // import main from "../configs/gemini.js";
 
@@ -127,7 +128,7 @@ export const getBlogComments = async (req, res) => {
       blog: blogId,
       isApproved: true,
     })
-      .populate("user")
+      .populate("user", "username name")
       .sort({ createdAt: -1 });
 
     res.json({ success: true, comments });
@@ -136,33 +137,45 @@ export const getBlogComments = async (req, res) => {
   }
 };
 
-export const getUserBlogs = async (req, res) => {
+// export const getUserBlogs = async (req, res) => {
+//   try {
+//     const { username } = req.params;
+
+//     const user = await User.findOne({ username });
+
+//     if (!user) {
+//       return res.json({ success: false, message: "User not found" });
+//     }
+
+//     const blogs = await Blog.find({
+//       author: user._id,
+//       isPublished: true,
+//     }).sort({ createdAt: -1 });
+
+//     res.json({ success: true, blogs });
+//   } catch (err) {
+//     res.json({ success: false, message: err.message });
+//   }
+// };
+
+export const getBlogsByUser = async (req, res) => {
   try {
+    const { username } = req.params;
+
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.json({ success: false, message: "User not found" });
+    }
+
     const blogs = await Blog.find({
-      author: req.params.userId,
+      author: user._id,
+      isPublished: true,
     }).sort({ createdAt: -1 });
 
     res.json({ success: true, blogs });
   } catch (err) {
     res.json({ success: false, message: err.message });
-  }
-};
-
-export const getBlogsByUser = async (req, res) => {
-  try {
-    const { userId } = req.params;
-
-    const blogs = await Blog.find({ author: userId }).sort({ createdAt: -1 });
-
-    res.json({
-      success: true,
-      blogs,
-    });
-  } catch (err) {
-    res.json({
-      success: false,
-      message: err.message,
-    });
   }
 };
 

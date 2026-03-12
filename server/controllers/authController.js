@@ -6,6 +6,8 @@ export const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
+    const username = name.toLowerCase().replace(/\s+/g, "");
+
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.json({ success: false, message: "User already exists" });
@@ -17,14 +19,16 @@ export const registerUser = async (req, res) => {
       name,
       email,
       password: hashedPassword,
+      username,
     });
 
     const token = jwt.sign(
       {
         id: user._id,
         role: user.role,
+        username: user.username,
       },
-      process.env.JWT_SECRET
+      process.env.JWT_SECRET,
     );
 
     res.json({
@@ -34,6 +38,7 @@ export const registerUser = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        username: user.username,
       },
     });
   } catch (err) {
@@ -61,8 +66,9 @@ export const loginUser = async (req, res) => {
       {
         id: user._id,
         role: user.role,
+        username: user.username,
       },
-      process.env.JWT_SECRET
+      process.env.JWT_SECRET,
     );
 
     res.json({
@@ -72,6 +78,7 @@ export const loginUser = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        username: user.username,
       },
     });
   } catch (err) {

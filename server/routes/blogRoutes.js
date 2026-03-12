@@ -21,11 +21,11 @@ blogRouter.get("/all", getAllBlogs);
 blogRouter.get("/:blogId", getBlogById);
 blogRouter.post("/delete", auth, deleteBlogById);
 blogRouter.post("/toggle-publish", auth, togglePublish);
-blogRouter.get("/user/:userId", getBlogsByUser);
+blogRouter.get("/user/:username", getBlogsByUser);
 
 // Comments
 blogRouter.post("/add-comment", auth, addComment);
-blogRouter.post("/comments", auth, getBlogComments);
+blogRouter.post("/comments", getBlogComments);
 
 // Generate AI
 // blogRouter.post("/generate", auth, generateContent);

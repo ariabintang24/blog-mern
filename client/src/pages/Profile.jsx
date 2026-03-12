@@ -6,7 +6,7 @@ import Loader from "../components/Loader";
 import toast from "react-hot-toast";
 
 const Profile = () => {
-  const { id } = useParams();
+  const { username } = useParams();
   const { axios } = useAppContext();
 
   const [blogs, setBlogs] = useState([]);
@@ -15,7 +15,7 @@ const Profile = () => {
 
   const fetchProfile = async () => {
     try {
-      const { data } = await axios.get(`/api/user/${id}`);
+      const { data } = await axios.get(`/api/user/${username}`);
 
       if (data.success) {
         setUser(data.user);
@@ -29,7 +29,7 @@ const Profile = () => {
 
   const fetchUserBlogs = async () => {
     try {
-      const { data } = await axios.get(`/api/blog/user/${id}`);
+      const { data } = await axios.get(`/api/blog/user/${username}`);
 
       if (data.success) {
         setBlogs(data.blogs);
@@ -44,7 +44,7 @@ const Profile = () => {
   useEffect(() => {
     fetchProfile();
     fetchUserBlogs();
-  }, [id]);
+  }, [username]);
 
   if (loading || !user) return <Loader />;
 

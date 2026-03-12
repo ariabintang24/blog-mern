@@ -50,21 +50,35 @@ const CommentTableItem = ({ comment, fetchComments }) => {
   };
 
   return (
-    <tr className="border-y border-gray-300">
+    <tr className="border-y border-gray-200 hover:bg-gray-50 transition">
       <td className="px-6 py-4">
-        <b className="font-medium text-gray-600">Blog</b> : {blog.title}
-        <br />
-        <br />
-        <b className="font-medium text-gray-600">Name</b> : {comment.name}
-        <br />
-        <b className="font-medium text-gray-600">Comment</b> : {comment.content}
+        <div className="space-y-1 text-sm">
+          <p>
+            <span className="font-medium text-gray-600">Blog:</span>{" "}
+            <span className="text-gray-800">{comment?.blog?.title ?? "-"}</span>
+          </p>
+
+          <p>
+            <span className="font-medium text-gray-600">User:</span>{" "}
+            <span className="text-gray-800">
+              {comment?.user?.username ?? "-"}
+            </span>
+          </p>
+
+          <p>
+            <span className="font-medium text-gray-600">Comment:</span>{" "}
+            <span className="text-gray-700">{comment.content}</span>
+          </p>
+        </div>
       </td>
-      <td className="px-6 py-4 max-sm:hidden">{BlogDate}</td>
+
+      <td className="px-6 py-4 text-sm text-gray-500 max-sm:hidden">
+        {BlogDate}
+      </td>
+
       <td className="px-6 py-4">
         <div className="inline-flex items-center gap-4">
           {!comment.isApproved ? (
-            // Tambahkan properti onClick
-
             <img
               onClick={approveComment}
               src={assets.tick_icon}
@@ -76,11 +90,12 @@ const CommentTableItem = ({ comment, fetchComments }) => {
               Approved
             </p>
           )}
+
           <img
             onClick={deleteComment}
             src={assets.bin_icon}
-            alt=""
-            className="transition-all w-5 hover:scale-110 cursor-pointer"
+            alt="delete"
+            className="w-5 hover:scale-110 cursor-pointer transition"
           />
         </div>
       </td>
