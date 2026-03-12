@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { useAppContext } from "../context/AppContext";
 import toast from "react-hot-toast";
 
@@ -40,44 +41,82 @@ const Register = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen">
-      <div className="w-full max-w-sm p-6 border rounded-lg shadow-lg">
-        <h2 className="text-2xl font-semibold text-center mb-6">
-          Create Account
-        </h2>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-200 px-4">
+      <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold text-gray-800">Create Account</h2>
+          <p className="text-gray-500 text-sm mt-2">
+            Join us and start your journey
+          </p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <input
-            type="text"
-            placeholder="Name"
-            required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="border p-2 rounded"
-          />
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+          {/* Name */}
+          <div className="flex flex-col gap-1">
+            <label className="text-sm text-gray-600">Name</label>
+            <input
+              type="text"
+              placeholder="Your full name"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="border border-gray-300 p-3 rounded-lg 
+                       focus:outline-none focus:ring-2 focus:ring-primary
+                       transition"
+            />
+          </div>
 
-          <input
-            type="email"
-            placeholder="Email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="border p-2 rounded"
-          />
+          {/* Email */}
+          <div className="flex flex-col gap-1">
+            <label className="text-sm text-gray-600">Email</label>
+            <input
+              type="email"
+              placeholder="example@email.com"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="border border-gray-300 p-3 rounded-lg 
+                       focus:outline-none focus:ring-2 focus:ring-primary
+                       transition"
+            />
+          </div>
 
-          <input
-            type="password"
-            placeholder="Password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="border p-2 rounded"
-          />
+          {/* Password */}
+          <div className="flex flex-col gap-1">
+            <label className="text-sm text-gray-600">Password</label>
+            <input
+              type="password"
+              placeholder="Create a password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="border border-gray-300 p-3 rounded-lg 
+                       focus:outline-none focus:ring-2 focus:ring-primary
+                       transition"
+            />
+          </div>
 
-          <button type="submit" className="bg-primary text-white py-2 rounded">
-            Register
+          {/* Button */}
+          <button
+            type="submit"
+            className="bg-primary text-white py-3 rounded-lg font-medium
+                     hover:opacity-90 transition"
+          >
+            Create Account
           </button>
         </form>
+
+        {/* Footer */}
+        <p className="text-center text-sm text-gray-500 mt-6">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="text-primary hover:underline font-medium"
+          >
+            Login
+          </Link>
+        </p>
       </div>
     </div>
   );
