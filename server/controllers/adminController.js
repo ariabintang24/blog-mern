@@ -5,6 +5,7 @@ import Comment from "../models/Comment.js";
 export const adminLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
+
     if (
       email !== process.env.ADMIN_EMAIL ||
       password !== process.env.ADMIN_PASSWORD
@@ -14,11 +15,11 @@ export const adminLogin = async (req, res) => {
 
     const token = jwt.sign(
       {
-        id: user._id,
-        role: "user",
+        role: "admin",
       },
       process.env.JWT_SECRET,
     );
+
     res.json({
       success: true,
       message: "Admin logged in",
@@ -44,8 +45,10 @@ export const getAllBlogsAdmin = async (req, res) => {
 export const getAllComments = async (req, res) => {
   try {
     const comments = await Comment.find({})
-      .populate("blog")
+      .populate("blog", "title")
+      .populate("user", "username name")
       .sort({ createdAt: -1 });
+
     res.json({ success: true, comments });
   } catch (err) {
     res.json({ success: false, message: err.message });
