@@ -4,7 +4,7 @@ import { useAppContext } from "../context/AppContext";
 import toast from "react-hot-toast";
 
 const Register = () => {
-  const { axios, setToken, navigate } = useAppContext();
+  const { axios, setToken, setUser, navigate } = useAppContext();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
