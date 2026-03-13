@@ -6,9 +6,13 @@ const Footer = () => {
     <div className="px-6 md:px-16 lg:px-24 xl:px-32 bg-primary/3">
       <div className="flex flex-col md:flex-row items-start justify-between gap-10 py-10 border-b border-gray-500/30 text-gray-500">
         <div>
-          <img src={assets.logo} alt="" className="w-32 sm:w-44" />
+          <h2 className="text-2xl font-semibold">
+            <span className="text-primary">Go</span>-Blog
+          </h2>
           <p className="max-w-[410px] mt-6">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            Go-Blog adalah platform blogging modern tempat para penulis berbagi
+            ide dan pembaca menemukan wawasan seputar teknologi, keuangan,
+            startup, dan gaya hidup.
           </p>
         </div>
 

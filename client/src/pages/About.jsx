@@ -7,7 +7,7 @@ const About = () => {
   return (
     <div>
       {" "}
-      <Navbar />
+      {/* <Navbar /> */}
       {/* Hero / Intro */}
       <section className="max-w-4xl mx-auto text-center mt-20 px-6">
         <h1 className="text-4xl sm:text-5xl font-semibold text-gray-800">

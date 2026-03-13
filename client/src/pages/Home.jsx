@@ -9,7 +9,7 @@ import PostBlog from "../components/PostBlog";
 const Home = () => {
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <Header />
       <BlogList />
       <PostBlog />
