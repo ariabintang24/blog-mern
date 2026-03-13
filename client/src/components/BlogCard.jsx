@@ -6,10 +6,7 @@ const BlogCard = ({ blog }) => {
   const navigate = useNavigate();
 
   return (
-    <div
-      onClick={() => navigate(`/blog/${_id}`)}
-      className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer group"
-    >
+    <div className="relative bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group">
       {/* Image */}
       <div className="w-full h-48 overflow-hidden">
         <img
@@ -25,7 +22,11 @@ const BlogCard = ({ blog }) => {
           {category}
         </span>
 
-        <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-1">
+        {/* TITLE CLICKABLE */}
+        <h3
+          onClick={() => navigate(`/blog/${_id}`)}
+          className="text-lg font-semibold text-gray-800 mb-2 line-clamp-1 cursor-pointer hover:text-primary transition"
+        >
           {title}
         </h3>
 

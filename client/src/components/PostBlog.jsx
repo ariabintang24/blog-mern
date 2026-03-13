@@ -1,8 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useAppContext } from "../context/AppContext";
+import toast from "react-hot-toast";
 
 const PostBlog = () => {
   const navigate = useNavigate();
+  const { token } = useAppContext();
 
   return (
     <section className="mx-8 sm:mx-16 xl:mx-40 mb-24">
@@ -19,7 +22,15 @@ const PostBlog = () => {
         </div>
 
         <button
-          onClick={() => navigate("/create-blog")}
+          onClick={() => {
+            if (!token) {
+              toast.error("Please login first");
+              navigate("/login");
+              return;
+            }
+
+            navigate("/create-blog");
+          }}
           className="bg-white text-primary font-medium px-6 py-3 rounded-lg hover:scale-105 transition"
         >
           Post Your Blog
