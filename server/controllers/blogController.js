@@ -45,7 +45,8 @@ export const addBlog = async (req, res) => {
       category,
       image,
       isPublished,
-      author: req.user.id,
+      author: req.user?.id || null,
+      authorRole: req.user?.role || "admin",
     });
 
     res.json({ success: true, message: "Blog added successfully" });
@@ -79,9 +80,25 @@ export const getBlogById = async (req, res) => {
 export const deleteBlogById = async (req, res) => {
   try {
     const { id } = req.body;
+
+    const blog = await Blog.findById(id);
+
+    if (!blog) {
+      return res.json({ success: false, message: "Blog not found" });
+    }
+
+    // jika ada author dan bukan admin
+    if (
+      blog.author &&
+      blog.author.toString() !== req.user.id &&
+      req.user.role !== "admin"
+    ) {
+      return res.json({ success: false, message: "Unauthorized" });
+    }
+
     await Blog.findByIdAndDelete(id);
 
-    //Delete all comments associated with the blog
+    // delete komentar terkait
     await Comment.deleteMany({ blog: id });
 
     res.json({ success: true, message: "Blog Deleted Successfully" });
@@ -132,6 +149,62 @@ export const getBlogComments = async (req, res) => {
       .sort({ createdAt: -1 });
 
     res.json({ success: true, comments });
+  } catch (err) {
+    res.json({ success: false, message: err.message });
+  }
+};
+
+export const updateBlog = async (req, res) => {
+  try {
+    const { id, title, subTitle, description, category } = JSON.parse(
+      req.body.blog,
+    );
+
+    const blog = await Blog.findById(id);
+
+    if (!blog) {
+      return res.json({ success: false, message: "Blog not found" });
+    }
+
+    if (blog.author.toString() !== req.user.id) {
+      return res.json({ success: false, message: "Unauthorized" });
+    }
+
+    blog.title = title;
+    blog.subTitle = subTitle;
+    blog.description = description;
+    blog.category = category;
+
+    if (req.file) {
+      blog.image = req.file.path;
+    }
+
+    await blog.save();
+
+    res.json({ success: true, message: "Blog updated successfully" });
+  } catch (err) {
+    res.json({ success: false, message: err.message });
+  }
+};
+
+export const deleteUserComment = async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    const comment = await Comment.findById(id);
+
+    if (!comment) {
+      return res.json({ success: false, message: "Comment not found" });
+    }
+
+    // hanya pemilik komentar yang boleh delete
+    if (comment.user.toString() !== req.user.id) {
+      return res.json({ success: false, message: "Unauthorized" });
+    }
+
+    await Comment.findByIdAndDelete(id);
+
+    res.json({ success: true, message: "Comment deleted successfully" });
   } catch (err) {
     res.json({ success: false, message: err.message });
   }
