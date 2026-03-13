@@ -66,6 +66,8 @@ const Profile = () => {
   };
 
   useEffect(() => {
+    if (!username) return;
+
     fetchProfile();
     fetchUserBlogs();
   }, [username]);

@@ -85,7 +85,7 @@ const Navbar = () => {
               {userMenu && (
                 <div className="absolute right-0 mt-3 w-44 bg-white shadow-lg rounded-lg py-3 text-sm">
                   <button
-                    onClick={() => go(`/profile/${user?.username || user?.id}`)}
+                    onClick={() => go("/profile")}
                     className="block w-full text-left px-4 py-2 hover:bg-gray-50"
                   >
                     Profile
@@ -156,11 +156,7 @@ const Navbar = () => {
             )}
 
             {token && user && (
-              <button
-                onClick={() => go(`/profile/${user.username || user.id}`)}
-              >
-                Profile
-              </button>
+              <button onClick={() => go("/profile")}>Profile</button>
             )}
 
             {!token && (
