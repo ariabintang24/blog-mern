@@ -20,12 +20,13 @@ const blogRouter = express.Router();
 // Blogs
 blogRouter.post("/add", upload.single("image"), auth, addBlog);
 blogRouter.get("/all", getAllBlogs);
+blogRouter.get("/user/:username", getBlogsByUser);
 blogRouter.get("/:blogId", getBlogById);
 blogRouter.post("/delete", auth, deleteBlogById);
 blogRouter.post("/toggle-publish", auth, togglePublish);
-blogRouter.get("/user/:username", getBlogsByUser);
 blogRouter.post("/update", upload.single("image"), auth, updateBlog);
 blogRouter.post("/delete-comment", auth, deleteUserComment);
+
 // Comments
 blogRouter.post("/add-comment", auth, addComment);
 blogRouter.post("/comments", getBlogComments);
