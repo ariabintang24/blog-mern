@@ -2,10 +2,14 @@ import mongoose from "mongoose";
 
 const connectDB = async () => {
   try {
-    mongoose.connection.on("connected", () => console.log("Database connected"));
+    console.log("Connecting to MongoDB...");
+
     await mongoose.connect(`${process.env.MONGODB_URI}/quickblog`);
+
+    console.log("MongoDB Connected");
   } catch (err) {
-    console.error(err.message);
+    console.error("MongoDB ERROR:", err.message);
+    process.exit(1); // ⬅️ penting, biar server tidak jalan setengah
   }
 };
 
