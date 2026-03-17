@@ -30,19 +30,25 @@ export const AppProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    fetchBlogs();
+    const init = async () => {
+      const token = localStorage.getItem("token");
+      const user = localStorage.getItem("user");
 
-    const token = localStorage.getItem("token");
-    const user = localStorage.getItem("user");
+      if (token) {
+        setToken(token);
+        axios.defaults.headers.common["Authorization"] = token;
+      } else {
+        delete axios.defaults.headers.common["Authorization"];
+      }
 
-    if (token) {
-      setToken(token);
-      axios.defaults.headers.common["Authorization"] = token;
-    }
+      if (user) {
+        setUser(JSON.parse(user));
+      }
 
-    if (user) {
-      setUser(JSON.parse(user));
-    }
+      await fetchBlogs();
+    };
+
+    init();
   }, []);
 
   //logout
