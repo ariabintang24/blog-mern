@@ -9,6 +9,10 @@ import CreateBlog from "./pages/CreateBlog";
 import Profile from "./pages/Profile";
 import MyBlogs from "./pages/MyBlogs";
 import EditBlog from "./pages/EditBlog";
+import EditProfile from "./pages/EditProfile";
+import ChangePassword from "./pages/ChangePassword";
+
+// Admin
 import Layout from "./pages/admin/Layout";
 import Dashboard from "./pages/admin/Dashboard";
 import AddBlog from "./pages/admin/AddBlog";
@@ -53,6 +57,8 @@ const App = () => {
 
         <Route path="/my-blogs" element={<MyBlogs />} />
         <Route path="/edit-blog/:id" element={<EditBlog />} />
+        <Route path="/settings/edit-profile" element={<EditProfile />} />
+        <Route path="/settings/change-password" element={<ChangePassword />} />
 
         <Route path="/admin" element={token ? <Layout /> : <AdminLogin />}>
           <Route index element={<Dashboard />} />
