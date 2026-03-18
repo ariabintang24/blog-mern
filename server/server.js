@@ -21,6 +21,7 @@ await connectDB();
 // 🧱 MIDDLEWARE
 app.use(cors()); // sementara open (development)
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // 🧪 TEST ROUTE (WAJIB ADA UNTUK DEBUG)
 app.get("/test", (req, res) => {

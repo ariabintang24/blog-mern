@@ -1,6 +1,8 @@
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import fs from "fs";
+import imagekit from "../configs/imageKit.js";
 
 export const registerUser = async (req, res) => {
   try {
@@ -15,11 +17,34 @@ export const registerUser = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    let avatarUrl = null;
+
+    // ✦ jika ada avatar
+    if (req.file) {
+      const fileBuffer = fs.readFileSync(req.file.path);
+
+      const response = await imagekit.upload({
+        file: fileBuffer,
+        fileName: req.file.originalname,
+        folder: "/avatars",
+      });
+
+      avatarUrl = imagekit.url({
+        path: response.filePath,
+        transformation: [
+          { quality: "auto" },
+          { format: "webp" },
+          { width: "300" },
+        ],
+      });
+    }
+
     const user = await User.create({
       name,
       email,
       password: hashedPassword,
       username,
+      avatar: avatarUrl, // ✦ bisa null
     });
 
     const token = jwt.sign(
@@ -39,6 +64,7 @@ export const registerUser = async (req, res) => {
         name: user.name,
         email: user.email,
         username: user.username,
+        avatar: user.avatar, // ✦ kirim ke frontend
       },
     });
   } catch (err) {
