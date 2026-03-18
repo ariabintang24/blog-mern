@@ -5,6 +5,14 @@ import User from "../models/User.js";
 import Comment from "../models/Comment.js";
 // import main from "../configs/gemini.js";
 
+const slugify = (text) => {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-");
+};
+
 export const addBlog = async (req, res) => {
   try {
     const { title, subTitle, description, category, isPublished } = JSON.parse(
@@ -38,6 +46,20 @@ export const addBlog = async (req, res) => {
     });
 
     const image = optimizedImageUrl;
+
+    // ✦ SLUG GENERATION
+    let slug = slugify(title);
+
+    // ✦ HANDLE DUPLICATE SLUG
+    let existing = await Blog.findOne({ slug });
+    let count = 1;
+
+    while (existing) {
+      slug = `${slugify(title)}-${count}`;
+      existing = await Blog.findOne({ slug });
+      count++;
+    }
+
     await Blog.create({
       title,
       subTitle,
@@ -45,6 +67,7 @@ export const addBlog = async (req, res) => {
       category,
       image,
       isPublished,
+      slug,
       author: req.user?.id || null,
       authorRole: req.user?.role || "admin",
     });
@@ -64,18 +87,42 @@ export const getAllBlogs = async (req, res) => {
   }
 };
 
-export const getBlogById = async (req, res) => {
+export const getBlogBySlug = async (req, res) => {
   try {
-    const { blogId } = req.params;
-    const blog = await Blog.findById(blogId).populate("author");
+    const { slug } = req.params;
+
+    let blog = await Blog.findOne({ slug }).populate("author");
+
+    // ✦ fallback ke _id
     if (!blog) {
-      return res.json({ success: false, message: "Blog Not Found" });
+      blog = await Blog.findById(slug).populate("author");
     }
+
+    if (!blog) {
+      return res.status(404).json({
+        success: false,
+        message: "Blog Not Found",
+      });
+    }
+
     res.json({ success: true, blog });
   } catch (err) {
-    res.json({ success: false, message: err.message });
+    res.status(500).json({ success: false, message: err.message });
   }
 };
+
+// export const getBlogById = async (req, res) => {
+//   try {
+//     const { blogId } = req.params;
+//     const blog = await Blog.findById(blogId).populate("author");
+//     if (!blog) {
+//       return res.json({ success: false, message: "Blog Not Found" });
+//     }
+//     res.json({ success: true, blog });
+//   } catch (err) {
+//     res.json({ success: false, message: err.message });
+//   }
+// };
 
 export const deleteBlogById = async (req, res) => {
   try {
@@ -145,7 +192,7 @@ export const getBlogComments = async (req, res) => {
       blog: blogId,
       isApproved: true,
     })
-      .populate("user", "username name")
+      .populate("user", "username name avatar")
       .sort({ createdAt: -1 });
 
     res.json({ success: true, comments });
