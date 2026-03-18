@@ -67,7 +67,7 @@ const MyBlogs = () => {
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
 
       <div className="max-w-6xl mx-auto px-6 py-12">
         <h1 className="text-2xl font-semibold mb-8">My Articles</h1>
@@ -82,7 +82,7 @@ const MyBlogs = () => {
                 <div
                   key={blog._id}
                   className="relative group cursor-pointer"
-                  onClick={() => navigate(`/blog/${blog._id}`)}
+                  onClick={() => navigate(`/blog/${blog.slug || blog._id}`)}
                 >
                   <BlogCard blog={blog} />
 
