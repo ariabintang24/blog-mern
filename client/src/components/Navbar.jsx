@@ -17,6 +17,7 @@ import {
 const Navbar = () => {
   const { navigate, token, user, logout } = useAppContext();
 
+  // console.log("NAVBAR TOKEN:", token);
   // console.log("NAVBAR USER:", user); // 👈 TARUH DI SINI
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -266,6 +267,19 @@ const Navbar = () => {
               >
                 About
               </button>
+
+              {/* Login */}
+              {!token && (
+                <div className="px-5 py-3">
+                  <button
+                    onClick={() => go("/login")}
+                    className="flex items-center gap-2 rounded-full text-sm px-6 py-2.5 bg-primary text-white w-fit"
+                  >
+                    Login
+                    <img src={assets.arrow} className="w-3" />
+                  </button>
+                </div>
+              )}
 
               {token && user && (
                 <button
