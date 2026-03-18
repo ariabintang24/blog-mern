@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 const Register = () => {
   const { axios, setToken, setUser, navigate } = useAppContext();
 
+  const [avatar, setAvatar] = useState(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,11 +15,16 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      const { data } = await axios.post("/api/auth/register", {
-        name,
-        email,
-        password,
-      });
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("email", email);
+      formData.append("password", password);
+
+      if (avatar) {
+        formData.append("avatar", avatar);
+      }
+
+      const { data } = await axios.post("/api/auth/register", formData);
 
       if (data.success) {
         setToken(data.token);
@@ -30,7 +36,6 @@ const Register = () => {
         axios.defaults.headers.common["Authorization"] = data.token;
 
         toast.success("Account created successfully");
-
         navigate("/");
       } else {
         toast.error(data.message);
@@ -52,6 +57,45 @@ const Register = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+          {/* Avatar */}
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+              {avatar ? (
+                <img
+                  src={URL.createObjectURL(avatar)}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span className="text-xl font-semibold text-gray-600">
+                  {name ? name[0].toUpperCase() : "U"}
+                </span>
+              )}
+            </div>
+
+            <div className="flex items-center gap-3 text-sm">
+              {/* Upload */}
+              <label className="text-primary cursor-pointer hover:underline">
+                Upload
+                <input
+                  type="file"
+                  accept="image/*"
+                  hidden
+                  onChange={(e) => setAvatar(e.target.files[0])}
+                />
+              </label>
+
+              {/* Remove */}
+              {avatar && (
+                <button
+                  type="button"
+                  onClick={() => setAvatar(null)}
+                  className="text-red-500 hover:underline"
+                >
+                  Remove
+                </button>
+              )}
+            </div>
+          </div>
           {/* Name */}
           <div className="flex flex-col gap-1">
             <label className="text-sm text-gray-600">Name</label>
