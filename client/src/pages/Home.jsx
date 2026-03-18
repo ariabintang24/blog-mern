@@ -11,7 +11,7 @@ const Home = () => {
     <>
       {/* <Navbar /> */}
       <Header />
-      <BlogList />
+      <BlogList limit={4} />
       <PostBlog />
       <Newsletter />
       <Footer />

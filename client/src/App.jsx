@@ -2,6 +2,7 @@ import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { useAppContext } from "./context/AppContext";
 import Home from "./pages/Home";
 import Blog from "./pages/Blog";
+import Blogs from "./pages/Blogs";
 import About from "./pages/About";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -38,8 +39,10 @@ const App = () => {
 
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/blog/:id" element={<Blog />} />
+        <Route path="/blog/:slug" element={<Blog />} />
         <Route path="/about" element={<About />} />
+        <Route path="/blogs" element={<Blogs />} />
+
         <Route path="/login" element={<Login />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/register" element={<Register />} />
