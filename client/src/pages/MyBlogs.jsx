@@ -3,14 +3,18 @@ import { useAppContext } from "../context/AppContext";
 import BlogCard from "../components/BlogCard";
 import Loader from "../components/Loader";
 import toast from "react-hot-toast";
-import Moment from "moment";
 import Navbar from "../components/Navbar";
+import { FiTrash2, FiEdit } from "react-icons/fi";
 
 const MyBlogs = () => {
   const { axios, user, navigate } = useAppContext();
 
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // ✦ Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const blogsPerPage = 8;
 
   const fetchMyBlogs = async () => {
     try {
@@ -47,6 +51,18 @@ const MyBlogs = () => {
     if (user) fetchMyBlogs();
   }, [user]);
 
+  // ✦ Pagination logic
+  const indexOfLast = currentPage * blogsPerPage;
+  const indexOfFirst = indexOfLast - blogsPerPage;
+  const currentBlogs = blogs.slice(indexOfFirst, indexOfLast);
+
+  const totalPages = Math.ceil(blogs.length / blogsPerPage);
+
+  // ✦ Reset page kalau data berubah
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [blogs]);
+
   if (loading) return <Loader />;
 
   return (
@@ -59,40 +75,64 @@ const MyBlogs = () => {
         {blogs.length === 0 ? (
           <p className="text-gray-500">You haven't written any articles yet.</p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
-            {blogs.map((blog) => (
-              <div
-                key={blog._id}
-                className="relative group cursor-pointer"
-                onClick={() => navigate(`/blog/${blog._id}`)}
-              >
-                <BlogCard blog={blog} />
+          <>
+            {/* BLOG GRID */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
+              {currentBlogs.map((blog) => (
+                <div
+                  key={blog._id}
+                  className="relative group cursor-pointer"
+                  onClick={() => navigate(`/blog/${blog._id}`)}
+                >
+                  <BlogCard blog={blog} />
 
-                {/* Action icons */}
-                <div className="absolute top-3 right-3 flex gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition z-20">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate(`/edit-blog/${blog._id}`);
-                    }}
-                    className="bg-white/90 backdrop-blur p-2 rounded-full shadow hover:bg-blue-500 hover:text-white transition"
-                  >
-                    <FiEdit size={16} />
-                  </button>
+                  {/* Action icons */}
+                  <div className="absolute top-3 right-3 flex gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition z-20">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/edit-blog/${blog._id}`);
+                      }}
+                      className="bg-white/90 backdrop-blur p-2 rounded-full shadow hover:bg-blue-500 hover:text-white transition"
+                    >
+                      <FiEdit size={16} />
+                    </button>
 
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      deleteBlog(blog._id);
-                    }}
-                    className="bg-white/90 backdrop-blur p-2 rounded-full shadow hover:bg-red-500 hover:text-white transition"
-                  >
-                    <FiTrash2 size={16} />
-                  </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteBlog(blog._id);
+                      }}
+                      className="bg-white/90 backdrop-blur p-2 rounded-full shadow hover:bg-red-500 hover:text-white transition"
+                    >
+                      <FiTrash2 size={16} />
+                    </button>
+                  </div>
                 </div>
+              ))}
+            </div>
+
+            {/* ✦ PAGINATION */}
+            {totalPages > 1 && (
+              <div className="flex justify-center mt-12 gap-2 flex-wrap">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (page) => (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`px-3 py-1 ${
+                        currentPage === page
+                          ? "bg-primary text-white"
+                          : "bg-gray-200"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  ),
+                )}
               </div>
-            ))}
-          </div>
+            )}
+          </>
         )}
       </div>
     </>
