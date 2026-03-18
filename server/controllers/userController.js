@@ -1,5 +1,7 @@
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
+import fs from "fs";
+import imagekit from "../configs/imageKit.js";
 
 export const getUserById = async (req, res) => {
   try {
@@ -22,25 +24,44 @@ export const getUserById = async (req, res) => {
 
 export const updateUserProfile = async (req, res) => {
   try {
-    const userId = req.user.id;
-    const { name, username, avatar } = req.body;
+    const { name, username } = req.body;
 
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      { name, username, avatar },
-      { new: true },
-    ).select("-password");
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.json({ success: false, message: "User not found" });
+    }
+
+    user.name = name;
+    user.username = username;
+
+    // Jika ada file avatar
+    if (req.file) {
+      const fileBuffer = fs.readFileSync(req.file.path);
+
+      const response = await imagekit.upload({
+        file: fileBuffer,
+        fileName: req.file.originalname,
+        folder: "/avatars",
+      });
+
+      const avatarUrl = imagekit.url({
+        path: response.filePath,
+        transformation: [{ width: "300" }],
+      });
+
+      user.avatar = avatarUrl;
+    }
+
+    await user.save();
 
     res.json({
       success: true,
-      message: "Profile updated successfully",
-      user: updatedUser,
+      user,
+      message: "Profile updated",
     });
   } catch (err) {
-    res.json({
-      success: false,
-      message: err.message,
-    });
+    res.json({ success: false, message: err.message });
   }
 };
 
