@@ -61,17 +61,17 @@ const Blog = () => {
     }
 
     try {
-      const { data } = await axios.post("/api/blog/add-comment", {
+      const { data: res } = await axios.post("/api/blog/add-comment", {
         blog: data._id,
         content,
       });
 
-      if (data.success) {
-        toast.success("Comment submitted for review");
+      if (res.success) {
+        toast.success("Comment added successfully");
         setContent("");
         fetchComments();
       } else {
-        toast.error(data.message);
+        toast.error(res.message);
       }
     } catch (err) {
       toast.error(err.message);

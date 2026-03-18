@@ -66,7 +66,7 @@ export const addBlog = async (req, res) => {
       description,
       category,
       image,
-      isPublished,
+      isPublished: true,
       slug,
       author: req.user?.id || null,
       authorRole: req.user?.role || "admin",
@@ -175,9 +175,10 @@ export const addComment = async (req, res) => {
       blog,
       content,
       user: req.user.id,
+      isApproved: true,
     });
 
-    res.json({ success: true, message: "Comment Added for Review" });
+    res.json({ success: true, message: "Comment added successfully" });
   } catch (err) {
     res.json({ success: false, message: err.message });
   }
@@ -190,7 +191,7 @@ export const getBlogComments = async (req, res) => {
     //Memanggil dari file Comment.js
     const comments = await Comment.find({
       blog: blogId,
-      isApproved: true,
+      // isApproved: true,
     })
       .populate("user", "username name avatar")
       .sort({ createdAt: -1 });
@@ -245,7 +246,8 @@ export const deleteUserComment = async (req, res) => {
     }
 
     // hanya pemilik komentar yang boleh delete
-    if (comment.user.toString() !== req.user.id) {
+    // sekarang admin juga bisa delete
+    if (comment.user.toString() !== req.user.id && req.user.role !== "admin") {
       return res.json({ success: false, message: "Unauthorized" });
     }
 

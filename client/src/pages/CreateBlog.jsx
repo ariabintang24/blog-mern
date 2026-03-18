@@ -45,9 +45,9 @@ const CreateBlog = () => {
       const { data } = await axios.post("/api/blog/add", formData);
 
       if (data.success) {
-        toast.success("Blog submitted for review");
+        toast.success("Blog added successfully");
 
-        navigate("/");
+        navigate("/profile");
       } else {
         toast.error(data.message);
       }
