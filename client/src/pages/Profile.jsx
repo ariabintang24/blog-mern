@@ -78,22 +78,45 @@ const Profile = () => {
     <>
       <div className="max-w-6xl mx-auto px-6 py-12">
         {/* Profile Header */}
-        <div className="flex items-center gap-6 mb-12">
-          <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center text-2xl font-semibold">
-            {user.name?.[0]?.toUpperCase()}
-          </div>
+        <div className="flex items-center justify-between mb-12">
+          <div className="flex items-center gap-6 mb-12">
+            <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-2xl font-semibold">
+              {user.avatar ? (
+                <img
+                  src={user.avatar}
+                  alt={user.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                user.name?.[0]?.toUpperCase()
+              )}
+            </div>
 
-          <div>
-            <h1 className="text-2xl font-semibold">{user.name}</h1>
-            <p className="text-gray-500">{user.email}</p>
-            <p className="text-sm text-gray-400 mt-1">
-              {blogs.length} Articles
-            </p>
+            <div>
+              <h1 className="text-2xl font-semibold">{user.name}</h1>
+
+              <p className="text-gray-500">@{user.username}</p>
+
+              <p className="text-sm text-gray-400 mt-1">
+                {blogs.length} Articles
+              </p>
+            </div>
           </div>
         </div>
 
         {/* Section Title */}
-        <h2 className="text-xl font-semibold mb-6">My Blogs</h2>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-semibold">My Blogs</h2>
+
+          {isOwner && (
+            <button
+              onClick={() => navigate("/create-blog")}
+              className="px-4 py-2 text-sm bg-primary text-white rounded-md hover:opacity-90"
+            >
+              + Add Blog
+            </button>
+          )}
+        </div>
 
         {blogs.length === 0 ? (
           <p className="text-gray-500">

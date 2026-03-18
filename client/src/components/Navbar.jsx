@@ -17,6 +17,8 @@ import {
 const Navbar = () => {
   const { navigate, token, user, logout } = useAppContext();
 
+  // console.log("NAVBAR USER:", user); // 👈 TARUH DI SINI
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenu, setUserMenu] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -60,13 +62,23 @@ const Navbar = () => {
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-8 text-gray-700 font-medium">
-          <button onClick={() => navigate("/")} className="hover:text-primary">
+          <button
+            onClick={() => navigate("/")}
+            className="cursor-pointer hover:text-primary"
+          >
             Home
           </button>
 
           <button
+            onClick={() => navigate("/blogs")}
+            className="cursor-pointer hover:text-primary"
+          >
+            Blogs
+          </button>
+
+          <button
             onClick={() => navigate("/about")}
-            className="hover:text-primary"
+            className="cursor-pointer hover:text-primary"
           >
             About
           </button>
@@ -92,9 +104,18 @@ const Navbar = () => {
                   setUserMenu(!userMenu);
                   setMenuOpen(false);
                 }}
-                className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center cursor-pointer font-semibold"
+                className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center cursor-pointer"
               >
-                {user?.name?.[0]?.toUpperCase() || "U"}
+                {user?.avatar ? (
+                  <img
+                    src={user.avatar}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="font-semibold">
+                    {user?.name?.[0]?.toUpperCase() || "U"}
+                  </span>
+                )}
               </div>
 
               {/* Dropdown */}
@@ -102,7 +123,7 @@ const Navbar = () => {
                 <div className="absolute right-0 mt-3 w-52 bg-white shadow-lg rounded-lg py-3 text-sm">
                   {/* Profile */}
                   <button
-                    onClick={() => go(`/profile/${user.username}`)}
+                    onClick={() => go("/profile")}
                     className="flex items-center gap-3 w-full text-left px-4 py-2 hover:bg-gray-50"
                   >
                     <FiUser size={16} />
@@ -130,7 +151,7 @@ const Navbar = () => {
                     {settingsOpen && (
                       <div className="ml-3 border-l border-gray-300 pl-1">
                         <button
-                          onClick={() => go("/edit-profile")}
+                          onClick={() => go("/settings/edit-profile")}
                           className="flex items-center gap-3 w-full text-left px-4 py-2 hover:bg-gray-50"
                         >
                           <FiEdit size={15} />
@@ -230,6 +251,13 @@ const Navbar = () => {
                 className="px-5 py-3 text-left hover:bg-gray-50"
               >
                 Home
+              </button>
+
+              <button
+                onClick={() => go("/blogs")}
+                className="px-5 py-3 text-left hover:bg-gray-50"
+              >
+                Blogs
               </button>
 
               <button
