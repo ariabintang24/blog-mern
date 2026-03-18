@@ -32,7 +32,9 @@ const Blog = () => {
   const fetchComments = async () => {
     if (!data?._id) return;
     try {
-      const { data: res } = await axios.post("/api/blog/comments", { blogId: data._id });
+      const { data: res } = await axios.post("/api/blog/comments", {
+        blogId: data._id,
+      });
 
       if (res.success) {
         setComments(res.comments);
@@ -129,7 +131,16 @@ const Blog = () => {
             <p className="mt-4 text-gray-500 text-lg">{data.subTitle}</p>
 
             <div className="mt-4 text-sm text-gray-500 flex items-center justify-center gap-3 flex-wrap">
-              <span>By {data.author?.name || "Admin"}</span>
+              <div className="flex items-center justify-center gap-1 text-sm">
+                <span className="text-gray-500">By</span>
+
+                <span
+                  onClick={() => navigate(`/profile/${data.author?.username}`)}
+                  className="cursor-pointer text-primary hover:underline font-medium"
+                >
+                  {data.author?.name || "Admin"}
+                </span>
+              </div>
               <span className="text-gray-300">•</span>
               <span>
                 Published {Moment(data.createdAt).format("D MMM YYYY")}
