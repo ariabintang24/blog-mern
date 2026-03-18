@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAppContext } from "../context/AppContext";
 import toast from "react-hot-toast";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 const Register = () => {
   const { axios, setToken, setUser, navigate } = useAppContext();
@@ -10,6 +11,7 @@ const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -129,16 +131,26 @@ const Register = () => {
           {/* Password */}
           <div className="flex flex-col gap-1">
             <label className="text-sm text-gray-600">Password</label>
-            <input
-              type="password"
-              placeholder="Create a password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="border border-gray-300 p-3 rounded-lg 
-                       focus:outline-none focus:ring-2 focus:ring-primary
-                       transition"
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Create a password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="border border-gray-300 p-3 rounded-lg w-full pr-10
+               focus:outline-none focus:ring-2 focus:ring-primary transition"
+              />
+
+              {/* Eye button */}
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              >
+                {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+              </button>
+            </div>
           </div>
 
           {/* Button */}
