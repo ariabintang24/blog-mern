@@ -10,8 +10,10 @@ import toast from "react-hot-toast";
 import { FiTrash2 } from "react-icons/fi";
 
 const Blog = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
   const { axios, token, user, navigate } = useAppContext();
+
+  // console.log("slug:", slug);
 
   const [data, setData] = useState(null);
   const [comments, setComments] = useState([]);
@@ -20,7 +22,7 @@ const Blog = () => {
 
   const fetchBlogData = async () => {
     try {
-      const { data } = await axios.get(`/api/blog/${id}`);
+      const { data } = await axios.get(`/api/blog/${slug}`);
       data.success ? setData(data.blog) : toast.error(data.message);
     } catch (err) {
       toast.error(err.message);
@@ -28,13 +30,14 @@ const Blog = () => {
   };
 
   const fetchComments = async () => {
+    if (!data?._id) return;
     try {
-      const { data } = await axios.post("/api/blog/comments", { blogId: id });
+      const { data: res } = await axios.post("/api/blog/comments", { blogId: data._id });
 
-      if (data.success) {
-        setComments(data.comments);
+      if (res.success) {
+        setComments(res.comments);
       } else {
-        toast.error(data.message);
+        toast.error(res.message);
       }
     } catch (err) {
       toast.error(err.message);
@@ -57,7 +60,7 @@ const Blog = () => {
 
     try {
       const { data } = await axios.post("/api/blog/add-comment", {
-        blog: id,
+        blog: data._id,
         content,
       });
 
@@ -92,10 +95,20 @@ const Blog = () => {
     }
   };
 
+  // useEffect(() => {
+  //   fetchBlogData();
+  //   fetchComments();
+  // }, [id]);
+
   useEffect(() => {
     fetchBlogData();
-    fetchComments();
-  }, [id]);
+  }, [slug]);
+
+  useEffect(() => {
+    if (data?._id) {
+      fetchComments();
+    }
+  }, [data]);
 
   return (
     <>
@@ -161,15 +174,30 @@ const Blog = () => {
                     key={item._id}
                     className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm"
                   >
-                    <div className="flex items-center gap-2 mb-2">
-                      <img src={assets.user_icon} className="w-6" />
+                    <div className="flex items-center gap-3 mb-2">
+                      {/* Avatar */}
+                      <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+                        {item.user?.avatar ? (
+                          <img
+                            src={item.user.avatar}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <span className="text-xs font-medium text-gray-600">
+                            {item.user?.name?.[0]?.toUpperCase() || "U"}
+                          </span>
+                        )}
+                      </div>
 
-                      <p className="font-medium">{item.user?.name}</p>
+                      {/* Name */}
+                      <p className="font-medium text-sm">{item.user?.name}</p>
 
+                      {/* Time */}
                       <span className="text-xs text-gray-400 ml-auto">
                         {Moment(item.createdAt).fromNow()}
                       </span>
 
+                      {/* Delete */}
                       {user && item.user?._id === user.id && (
                         <FiTrash2
                           size={15}

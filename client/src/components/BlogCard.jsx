@@ -24,7 +24,7 @@ const BlogCard = ({ blog }) => {
 
         {/* TITLE CLICKABLE */}
         <h3
-          onClick={() => navigate(`/blog/${_id}`)}
+          onClick={() => navigate(`/blog/${blog.slug || blog._id}`)}
           className="text-lg font-semibold text-gray-800 mb-2 line-clamp-1 cursor-pointer hover:text-primary transition"
         >
           {title}
